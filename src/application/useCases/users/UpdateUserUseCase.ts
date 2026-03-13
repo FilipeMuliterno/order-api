@@ -1,5 +1,6 @@
 import { User } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
+import { Email } from "../../../domain/values-objects/Email";
 
 interface UpdateUserRequest {
   id: number;
@@ -16,8 +17,9 @@ export class UpdateUserUseCase {
     if (!user) {
       return null;
     }
+    const email = new Email(data.email);
     user.name = data.name;
-    user.email = data.email;
+    user.email = email;
     user.role = data.role;
     const userUpdate = await this.userRepository.update(user);
     return userUpdate;

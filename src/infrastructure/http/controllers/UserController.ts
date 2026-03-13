@@ -3,7 +3,7 @@ import { CreateUserUseCase } from "../../../application/useCases/users/CreateUse
 import { DeleteUserUseCase } from "../../../application/useCases/users/DeleteUserUseCase";
 import { FindUserByIdUseCase } from "../../../application/useCases/users/FindUserByIdUserCase";
 import { UpdateUserUseCase } from "../../../application/useCases/users/UpdateUserUseCase";
-import { TypeORMUserRepository } from "../../typeorm/TypeORMUserRepository";
+import { TypeORMUserRepository } from "../../typeorm/repositories/UserRepository";
 
 export class UserController {
   //Metodo do controller

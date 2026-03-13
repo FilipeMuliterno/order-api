@@ -8,6 +8,7 @@ import { IUserRepository } from "../../domain/repositories/IUserRepository"; //E
 import { User as DomainUser } from "../../domain/entities/User"; //entidade do dominio
 import { User as ORMUser } from "./entities/User"; //entidade usada pelo typeORM
 import { AppDataSource } from "../database/data-source"; //conexão com o BD
+import { Email } from "../../domain/values-objects/Email";
 
 //cria o repositorio com base o IUserRepositorio para definir o contrato a seguir
 export class TypeORMUserRepository implements IUserRepository {
@@ -29,7 +30,11 @@ export class TypeORMUserRepository implements IUserRepository {
   //Esse método converte a entidade do banco para a entidade do domínio.
   //Na Clean Architecture domínio não conhece ORM, então precisamos converter.
   private toDomain(ormUser: ORMUser): DomainUser {
-    const user = new DomainUser(ormUser.name, ormUser.email, ormUser.role);
+    const user = new DomainUser(
+      ormUser.name,
+      new Email(ormUser.email),
+      ormUser.role
+    );
     user.id = ormUser.id;
     user.createdAt = ormUser.createdAt;
     return user;
@@ -40,7 +45,7 @@ export class TypeORMUserRepository implements IUserRepository {
   private toORM(user: DomainUser): ORMUser {
     const ormUser = new ORMUser();
     ormUser.name = user.name;
-    ormUser.email = user.email;
+    ormUser.email = user.email.getValue();
     ormUser.role = user.role;
     return ormUser;
   }
@@ -64,7 +69,7 @@ export class TypeORMUserRepository implements IUserRepository {
   async update(user: DomainUser): Promise<DomainUser | null> {
     await this.repo.update(user.id, {
       name: user.name,
-      email: user.email,
+      email: user.email.getValue(),
       role: user.role,
     });
     const userUpdate = await this.repo.findOneBy({ id: user.id });
